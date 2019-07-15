@@ -1,17 +1,18 @@
 import React, { Component } from "react";
-import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import { Auth } from "aws-amplify";
-
+import LoaderButton from "../components/LoaderButton";
 import "./Login.css";
 
 export default class Login extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      email: "",
-      password: ""
-    };
+        isLoading: false,
+        email: "",
+        password: ""
+      };
   }
 
   validateForm() {
@@ -25,17 +26,17 @@ export default class Login extends Component {
   }
 
   handleSubmit = async event => {
-    event.preventDefault();
-  
+    event.preventDefault();  
+    this.setState({ isLoading: true });  
     try {
       await Auth.signIn(this.state.email, this.state.password);
       this.props.userHasAuthenticated(true);
-
+      this.props.history.push("/");
     } catch (e) {
       alert(e.message);
+      this.setState({ isLoading: false });
     }
-  }
-  
+  }   
 
   render() {
     return (
@@ -58,14 +59,15 @@ export default class Login extends Component {
               type="password"
             />
           </FormGroup>
-          <Button
+          <Link to="/login/reset">Forgot password?</Link>
+          <LoaderButton
             block
             bsSize="large"
             disabled={!this.validateForm()}
             type="submit"
-          >
-            Login
-          </Button>
+            isLoading={this.state.isLoading}
+            text="Login"
+            loadingText="Logging in…" />
         </form>
       </div>
     );
