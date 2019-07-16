@@ -13,9 +13,13 @@ export default class NewNote extends Component {
     this.file = null;
 
     this.state = {
-      isLoading: null,
-      content: ""
-    };
+        isLoading: null,
+        isDeleting: null,
+        note: null,
+        content: "",
+        attachmentURL: null
+      };
+      
   }
 
   validateForm() {
